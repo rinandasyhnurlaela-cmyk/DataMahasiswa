@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGrade Studio — Dashboard Analitik Nilai Mahasiswa</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- HEADER UTAMA -->
+        <header class="app-header">
+            <div class="brand-title-wrap">
+                <div class="brand-icon">🎓</div>
+                <div>
+                    <h1>EduGrade Studio</h1>
+                    <p class="subtitle">Platform Pintar Manajemen & Analitik Performa Mahasiswa</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="datetime-badge" id="datetimeBadge" title="Waktu Saat Ini">
+                    <span class="date-text" id="liveDate">--</span>
+                    <span class="time-text" id="liveTime">--:--:--</span>
+                </div>
+                <div id="pesan" role="status"></div>
+            </div>
+        </header>
+
+        <!-- RINGKASAN METRIK ATAS -->
+        <section class="statistik-container" aria-label="Statistik Mahasiswa">
+            <div class="stat-card">
+                <span class="stat-label">Total Mahasiswa</span>
+                <strong class="stat-value" id="statTotal">0</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Rata-rata Nilai</span>
+                <strong class="stat-value" id="statRataRata">0.0</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Nilai Tertinggi</span>
+                <strong class="stat-value text-success" id="statTertinggi">-</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Nilai Terendah</span>
+                <strong class="stat-value text-danger" id="statTerendah">-</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Tingkat Kelulusan</span>
+                <strong class="stat-value" id="statPersenLulus">0%</strong>
+                <small class="stat-sub" id="statDetailLulus">(0 Lulus / 0 Belum)</small>
+            </div>
+        </section>
+
+        <!-- KONTEN UTAMA LANDSCAPE: 2 KOLOM (KIRI & KANAN) -->
+        <main class="dashboard-grid">
+            <!-- KOLOM KIRI: INPUT FORM & VISUAL GRAFIK -->
+            <aside class="left-panel">
+                <section class="card form-card">
+                    <h2 class="card-title">Input Data Mahasiswa</h2>
+                    <form id="formMahasiswa">
+                        <div class="form-group">
+                            <label for="nama">Nama Mahasiswa</label>
+                            <input id="nama" type="text" placeholder="Contoh: Andi" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nim">NIM</label>
+                            <input id="nim" type="text" placeholder="Contoh: 231001" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prodi">Program Studi</label>
+                            <input id="prodi" type="text" placeholder="Contoh: Teknik Informatika" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nilai">Nilai (0-100)</label>
+                            <input id="nilai" type="number" min="0" max="100" placeholder="Contoh: 85" required>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Tambah Data</button>
+                    </form>
+                </section>
+
+                <section class="card chart-card" id="chartSection">
+                    <h2 class="card-title">Distribusi Predikat</h2>
+                    <div class="distribution-bars">
+                        <div class="dist-row">
+                            <span class="grade-badge grade-a">A (&ge;85)</span>
+                            <div class="bar-track">
+                                <div class="bar-fill bar-a" id="barA" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="countA">0 mhs (0%)</span>
+                        </div>
+                        <div class="dist-row">
+                            <span class="grade-badge grade-b">B (75-84)</span>
+                            <div class="bar-track">
+                                <div class="bar-fill bar-b" id="barB" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="countB">0 mhs (0%)</span>
+                        </div>
+                        <div class="dist-row">
+                            <span class="grade-badge grade-c">C (60-74)</span>
+                            <div class="bar-track">
+                                <div class="bar-fill bar-c" id="barC" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="countC">0 mhs (0%)</span>
+                        </div>
+                        <div class="dist-row">
+                            <span class="grade-badge grade-d">D (&lt;60)</span>
+                            <div class="bar-track">
+                                <div class="bar-fill bar-d" id="barD" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="countD">0 mhs (0%)</span>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- KOLOM KANAN: TABEL DATA MAHASISWA DENGAN FITUR LENGKAP -->
+            <section class="card table-card">
+                <div class="toolbar-header">
+                    <div>
+                        <h2 class="card-title">Daftar Mahasiswa Aktif</h2>
+                        <p class="jumlah">Menampilkan: <strong id="jumlah">0</strong> dari <span id="totalDataCount">0</span> mahasiswa</p>
+                    </div>
+                    <div class="header-actions">
+                        <button type="button" id="btnSampleData" class="btn-secondary" title="Muat 5 data contoh untuk presentasi/demo">✨ Data Contoh</button>
+                        <button type="button" id="btnExportCSV" class="btn-export" title="Unduh tabel dalam format Excel / CSV">📥 Unduh CSV</button>
+                        <button type="button" id="tombolReset" class="btn-reset" title="Kosongkan seluruh data">Reset</button>
+                    </div>
+                </div>
+
+                <!-- BAR KONTROL TABEL: SEARCH & FILTER & SORT -->
+                <div class="table-controls">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Cari nama, NIM, atau program studi..." autocomplete="off">
+                    </div>
+                    <div class="filter-group">
+                        <select id="filterStatus" class="select-filter" aria-label="Filter Kelulusan">
+                            <option value="all">Semua Status</option>
+                            <option value="Lulus">Lulus Saja</option>
+                            <option value="Belum Lulus">Belum Lulus Saja</option>
+                        </select>
+                        <select id="filterPredikat" class="select-filter" aria-label="Filter Predikat">
+                            <option value="all">Semua Predikat</option>
+                            <option value="A">Predikat A</option>
+                            <option value="B">Predikat B</option>
+                            <option value="C">Predikat C</option>
+                            <option value="D">Predikat D</option>
+                        </select>
+                        <select id="sortData" class="select-filter" aria-label="Urutkan Data">
+                            <option value="default">Urutan Input</option>
+                            <option value="nilai-desc">Nilai Tertinggi (100 - 0)</option>
+                            <option value="nilai-asc">Nilai Terendah (0 - 100)</option>
+                            <option value="nama-asc">Nama (A - Z)</option>
+                            <option value="nim-asc">NIM (Terkecil)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="tabelMahasiswa">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px; text-align: center;">No</th>
+                                <th>Mahasiswa</th>
+                                <th>NIM</th>
+                                <th>Program Studi</th>
+                                <th style="width: 140px;">Nilai Akhir</th>
+                                <th style="text-align: center; width: 90px;">Predikat</th>
+                                <th style="text-align: center; width: 120px;">Kelulusan</th>
+                                <th style="text-align: center; width: 130px;">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daftarMahasiswa"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL EDIT DATA MAHASISWA -->
+    <div id="modalEdit" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalTitle">Edit Data Mahasiswa</h3>
+                <button type="button" id="btnBatalEdit" class="modal-close" aria-label="Tutup">&times;</button>
+            </div>
+            <form id="formEdit">
+                <input type="hidden" id="editIndex">
+                <div class="form-group">
+                    <label for="editNama">Nama Lengkap</label>
+                    <input id="editNama" type="text" required>
+                </div>
+                <div class="form-group">
+                    <label for="editNim">NIM</label>
+                    <input id="editNim" type="text" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProdi">Program Studi</label>
+                    <input id="editProdi" type="text" required>
+                </div>
+                <div class="form-group">
+                    <label for="editNilai">Nilai (0-100)</label>
+                    <input id="editNilai" type="number" min="0" max="100" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="btnCancelModal" class="btn-modal-cancel">Batal</button>
+                    <button type="submit" class="btn-modal-save">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
